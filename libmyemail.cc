@@ -30,9 +30,9 @@ extern "C" {
 
 my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
 
-    if(args->arg_count != 2)
+    if(args->arg_count != 3)
     {
-        strcpy(message, "Expected 2 arguments");
+        strcpy(message, "Expected 3 arguments");
         return 1; /* Less or more arguments than expected were passed, send back a error */
     }
     
