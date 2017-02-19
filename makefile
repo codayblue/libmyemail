@@ -6,8 +6,8 @@ build:
 	if [ ! -d "$(OUTDIR)" ]; then \
 		mkdir $(OUTDIR); \
 	fi
-	$(CC) -fPIC -c libmyemail.cc -o $(OUTDIR)/libmyemail.o
-	$(CC) -shared -o build/libmyemail.so $(OUTDIR)/libmyemail.o
+	$(CC) -std=c++11 -fPIC -c libmyemail.cc -o $(OUTDIR)/libmyemail.o
+	$(CC) -std=c++11 -shared -o build/libmyemail.so $(OUTDIR)/libmyemail.o
 
 clean:
 	rm -rf $(OUTDIR)
