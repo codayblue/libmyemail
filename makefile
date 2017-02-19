@@ -5,5 +5,5 @@ all:
 		mkdir build; \
 	fi
 	cd build
-	$(CC) -fPIC -c ../libmyemail.cc -o libmyemail.o
-	$(CC) -shared -o libmyemail.so libmyemail.o
+	$(CC) -fPIC -c libmyemail.cc -o build/libmyemail.o
+	$(CC) -shared -o build/libmyemail.so build/libmyemail.o
