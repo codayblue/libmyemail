@@ -1,9 +1,13 @@
 CC=g++
+OUTDIR=build
 
-all: 
-	if [ ! -d "build" ]; then \
-		mkdir build; \
+build: 
+	if [ ! -d "$(OUTDIR)" ]; then \
+		mkdir $(OUTDIR); \
 	fi
-	cd build
-	$(CC) -fPIC -c libmyemail.cc -o build/libmyemail.o
-	$(CC) -shared -o build/libmyemail.so build/libmyemail.o
+	cd $(OUTDIR)
+	$(CC) -fPIC -c libmyemail.cc -o $(OUTDIR)/libmyemail.o
+	$(CC) -shared -o build/libmyemail.so $(OUTDIR)/libmyemail.o
+
+clean:
+	rm -rf $(OUTDIR)
