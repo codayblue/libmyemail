@@ -3,7 +3,7 @@ OUTDIR=build
 INSTALLDIR=/usr/lib/mysql/plugin
 MYUSER=root
 MYHOST=localhost
-USEMYPASS=0
+USEMYPASS=1
 MYSQLUNIT=mariadb.service
 
 build: 
@@ -19,10 +19,18 @@ clean:
 install:
 	cp $(OUTDIR)/libmyemail.so $(INSTALLDIR)/libmyemail.so
 	systemctl restart $(MYSQLUNIT)
-	mysql -u$(MYUSER) -p -h$(MYHOST) -e "CREATE FUNCTION sendmail RETURNS INTEGER SONAME 'libmyemail.so';"
+ifeq ($(USEMYPASS), 1)
+	mysql -u$(MYUSER) -p -h$(MYHOST) -e "CREATE FUNCTION sendmail RETURNS INTEGER SONAME 'libmyemail.so';" 
+else 
+	mysql -u$(MYUSER) -h$(MYHOST) -e "CREATE FUNCTION sendmail RETURNS INTEGER SONAME 'libmyemail.so';"	
+endif
 
 uninstall:
-	mysql -u$(MYUSER) -p -h$(MYHOST) -e "DROP FUNCTION sendmail;"
+ifeq ($(USEMYPASS), 1)
+	mysql -u$(MYUSER) -p -h$(MYHOST) -e "DROP FUNCTION sendmail;" 
+else 
+	mysql -u$(MYUSER) -h$(MYHOST) -e "DROP FUNCTION sendmail;"	
+endif
 	systemctl restart $(MYSQLUNIT)
 	rm $(INSTALLDIR)/libmyemail.so
 
