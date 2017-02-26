@@ -30,3 +30,16 @@ mysql> sendmail('test@example.com','subject','email body');
 ```
 # make uninstall
 ```
+
+### Issues
+When you find an issue or something does not work the way you think it is supposed, feel free to make an issue. It will get a label from the repo creator  (or managers when we get more contributors) and someone will begin work on it. If it is an easy fix and is not breaking functionality, we will label for beginners and might wait to fix it until it annoys us enough or some one new to open source comes along and wants to fix it.
+
+When making a new feature or making something work better still put in a issue stating that and it will get a feature or improvement label.
+
+### Contribute
+1. Fork this repo
+2. Clone your version of the repo
+3. pick an issue to fix or make an issue
+3. make changes and push them to your repo
+4. make a Pull Request tagging the issue number in the PR
+5. congrats you have helped the community!
