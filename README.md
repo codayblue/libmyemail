@@ -18,8 +18,15 @@
 ```
 $ make
 # make install
+$ make clean
 ```
 4. (optional) Send test email
 ```
 mysql> sendmail('test@example.com','subject','email body');
+```
+
+### Uninstall
+
+```
+# make uninstall
 ```
