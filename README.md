@@ -16,9 +16,9 @@
   - Set ```MYSQLUNIT``` to the systemd unit that can start and stop the server
 3. Build and install
 ```
-$ make
-# make install
-$ make clean
+$> make
+#> make install
+$> make clean
 ```
 4. (optional) Send test email
 ```
@@ -28,7 +28,7 @@ mysql> sendmail('test@example.com','subject','email body');
 ### Uninstall
 
 ```
-# make uninstall
+#> make uninstall
 ```
 
 ### Issues
