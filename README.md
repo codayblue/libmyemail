@@ -40,6 +40,10 @@ When making a new feature or making something work better still put in a issue s
 1. Fork this repo
 2. Clone your version of the repo
 3. pick an issue to fix or make an issue
-3. make changes and push them to your repo
-4. make a Pull Request tagging the issue number in the PR
-5. congrats you have helped the community!
+4. make changes and push them to your repo
+  - Mention the issue number in your commits like so
+  ```
+  git commit -m "git message - ## Ticket Number ##"
+  ```
+5. make a Pull Request tagging the issue number in the PR
+6. congrats you have helped the community!
