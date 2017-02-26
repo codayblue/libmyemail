@@ -3,6 +3,7 @@
 ### Installation
 
 1. Install dependencies
+  - g++ compiler
   - For MySQL: ```libmysqlclient``` or your distribution equivalent
   - For Maria DB: ```libmariadbclient``` or your distribution equivalent
   - install and configure any smtp application that uses the mail command
