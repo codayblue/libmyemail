@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.1.3 FATAL_ERROR)
 
 project(myemail)
 
+# Variables
+set(MYSQL_PLUGIN_DIR /usr/lib/mysql/plugin)
+
 # Set the standard
 set(CMAKE_CXX_STANDARD 11)
 
