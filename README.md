@@ -3,24 +3,29 @@
 ### Installation
 
 1. Install dependencies
-  - g++ compiler
-  - For MySQL: ```libmysqlclient``` or your distribution equivalent
-  - For Maria DB: ```libmariadbclient``` or your distribution equivalent
+  - GNU C++ Compiler or CLANG
+  - cmake and make
+  - For MySQL: ```libmysqlclient``` or your system equivalent
+  - For Maria DB: ```libmariadbclient``` or your system equivalent
   - install and configure any smtp application that uses the mail command
     - recommended ```ssmtp```
     - Also works with ```sendmail``` and ```postfix```
-2. Configure the makefile to build for your system
-  - Set ```INSTALLDIR``` to the plugin directory for your installation
-  - Set ```MYUSER``` to your mysql user
-  - Set ```MYHOST``` to the mysql installation host
-  - Set ```USEMYPASS``` to 1 for password login or 0 for no password
-  - Set ```MYSQLUNIT``` to the systemd unit that can start and stop the server
+2. Configure the cmake to build for your system
+  - Set ```INSTALL_DIR``` to the plugin directory for your installation
+    - DEFAULT: ```/usr/lib/mysql/plugin```
+    - Example: ```cmake -DINSTALL_DIR=/path/to/install ...```
 3. Build and install
 ```
+$> mkdir build && cd build
+$> cmake <install directory> ../source
 $> make
 #> make install
 $> make clean
+#> service mysql restart
+$> mysql <login flags> -e "CREATE FUNCTION sendmail RETURNS INTEGER SONAME 'libmyemail.so';"
 ```
+Note: convert to your systems commands
+
 4. (optional) Send test email
 ```
 mysql> sendmail('test@example.com','subject','email body');
@@ -29,8 +34,11 @@ mysql> sendmail('test@example.com','subject','email body');
 ### Uninstall
 
 ```
-#> make uninstall
+$> mysql <login flags> -e "DROP FUNCTION sendmail;"
+#> rm <install directory>/libmyemail.so
+#> service mysql restart
 ```
+Note: convert to your systems commands
 
 ### Issues
 When you find an issue or something does not work the way you think it is supposed, feel free to make an issue. It will get a label from the repo creator  (or managers when we get more contributors) and someone will begin work on it. If it is an easy fix and is not breaking functionality, we will label for beginners and might wait to fix it until it annoys us enough or some one new to open source comes along and wants to fix it.
