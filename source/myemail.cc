@@ -7,11 +7,11 @@
  *
  *        Version:  1.0
  *        Created:  02/18/2017 07:54:36 PM
- *       Revision:  
- *       Compiler:  g++
+ *       Revision:
+ *       Compiler:  g++ or clang
  *
- *         Author:  codayblue, 
- *   Organization:  
+ *         Author:  codayblue,
+ *   Organization:
  *
  * =====================================================================================
  */
@@ -19,14 +19,24 @@
 #include <mysql/mysql.h> /* Needed for mysql */
 #include <cstring> /* needed for string copy */
 #include <string> /* Easier to work with strings */
+#include <sstream> /* use a string stream to split a comma delimited string */
+#include "Poco/Net/SecureSMTPClientSession.h" /* Send the email over TLS this is needed */
+#include "Poco/Net/SMTPClientSession.h" /* The secure method relies on this and also is used to send over nonsecure */
+#include "Poco/Net/MailMessage.h" /* Represents the email being sent */
+#include "Poco/Net/NetException.h" /* SMTP and Net exceptions so they can be caught */
+
 
 using namespace std;
+using namespace Poco::Net;
 
 extern "C" {
    my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message);
    void sendmail_deinit(UDF_INIT *initid);
-   long long sendmail(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error);
+   char *sendmail(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error);
 }
+
+string send(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error);
+string sendSecure(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error);
 
 my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
 
@@ -35,7 +45,7 @@ my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
         strcpy(message, "Expected 3 arguments");
         return 1; /* Less or more arguments than expected were passed, send back a error */
     }
-    
+
     if(args->arg_type[0] != STRING_RESULT)
     {
         strcpy(message, "First argument is expecting a string value");
@@ -60,17 +70,53 @@ my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
 void sendmail_deinit(UDF_INIT *initid){
 }
 
-long long sendmail(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
-   int results = 0;
-   string cmd;
-   string to(args->args[0]);
-   string sub(args->args[1]);
-   string msg(args->args[2]);
-   
-   cmd = "echo '" + msg + "' | mail -s '" + sub + "' " + to;
-   
-   results = system(cmd.c_str());
+char *sendmail(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error) {
 
-   return (long long) results;
+    string from(args->args[0]);
+    string to(args->args[1]);
+    string sub(args->args[2]);
+    string msg(args->args[3]);
+    string host(args->args[4]);
+    string uname(args->args[6]);
+    string pass(args->args[7]);
+
+    long long port = *((long long*) args->args[5]);
+    long long secure = *((long long*) args->args[8]);
+
+    string buff;
+    stringstream ss(to);
+    SMTPClientSession::Recipients toList;
+
+    MailMessage message;
+
+    /* Brake up the comma list of recipients into the vector */
+    while(getline(ss, buff, ','))
+    {
+        toList.push_back(buff);
+    }
+
+    /* Create the message */
+    message.setSender(from);
+    message.setSubject(sub);
+    message.setContent(msg);
+
+    /* Send either via secure or insecure */
+    if (secure == 1)
+    {
+        sendSecure(host, uname, pass, port, toList, &message, error);
+    }
+    else
+    {
+        send(host, uname, pass, port, toList, &message, error);
+    }
+
+    return result;
 }
 
+string send(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error) {
+    return "Message sent";
+}
+
+string sendSecure(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error) {
+    return "Message sent";
+}
