@@ -21,14 +21,6 @@ add_library(myemail SHARED myemail.cc)
 # MySQL header
 target_link_libraries(${PROJECT_NAME} mysqlclient)
 
-# MySQL Deps
-target_link_libraries(${PROJECT_NAME} pthread)
-target_link_libraries(${PROJECT_NAME} z)
-target_link_libraries(${PROJECT_NAME} m)
-target_link_libraries(${PROJECT_NAME} ssl)
-target_link_libraries(${PROJECT_NAME} crypto)
-target_link_libraries(${PROJECT_NAME} dl)
-
 # Poco libs
 target_link_libraries(${PROJECT_NAME} PocoNetSSL)
 target_link_libraries(${PROJECT_NAME} PocoNet)
