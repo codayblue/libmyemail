@@ -7,9 +7,11 @@
   - cmake and make
   - For MySQL: ```libmysqlclient``` or your system equivalent
   - For Maria DB: ```libmariadbclient``` or your system equivalent
-  - install and configure any smtp application that uses the mail command
-    - recommended ```ssmtp```
-    - Also works with ```sendmail``` and ```postfix```
+  - Install the following lib packages
+    - ```libpoconet```
+    - ```libpoconetssl```
+    - ```libpocofoundation```
+    - ```libssl```
 2. Configure the cmake to build for your system
   - Set ```INSTALL_DIR``` to the plugin directory for your installation
     - DEFAULT: ```/usr/lib/mysql/plugin```
@@ -22,13 +24,23 @@ $> make
 #> make install
 $> make clean
 #> service mysql restart
-$> mysql <login flags> -e "CREATE FUNCTION sendmail RETURNS INTEGER SONAME 'libmyemail.so';"
+$> mysql <login flags> -e "CREATE FUNCTION sendmail RETURNS STRING SONAME 'libmyemail.so';"
 ```
 Note: convert to your systems commands
 
 4. (optional) Send test email
 ```
-mysql> sendmail('test@example.com','subject','email body');
+mysql> SELECT sendmail(
+                        '<from email address>'
+                        ,'<comma delimited list or just one email address to send to>'
+                        ,'<subject>'
+                        ,'<email body>'
+                        ,'<smtp server url>'
+                        ,<port number>
+                        ,'<username>'
+                        ,'<password>'
+                        ,<secure flag, set to 0 for plain smtp and 1 for TLS>
+                      );
 ```
 
 ### Uninstall
