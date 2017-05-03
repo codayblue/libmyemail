@@ -35,8 +35,8 @@ extern "C" {
    char *sendmail(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error);
 }
 
-string send(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error);
-string sendSecure(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error);
+string send(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage &msg, char *error);
+string sendSecure(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage &msg, char *error);
 
 my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
 
@@ -140,11 +140,11 @@ char *sendmail(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *le
     /* Send either via secure or insecure */
     if (secure == 1)
     {
-        results = sendSecure(host, uname, pass, port, toList, &message, error);
+        results = sendSecure(host, uname, pass, port, toList, message, error);
     }
     else
     {
-        results = send(host, uname, pass, port, toList, &message, error);
+        results = send(host, uname, pass, port, toList, message, error);
     }
 
     /* Send the results back to mysql */
@@ -162,7 +162,7 @@ char *sendmail(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *le
     return result;
 }
 
-string send(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error) {
+string send(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage &msg, char *error) {
     SMTPClientSession session(host, port);
 
     string results = "Message Sent";
@@ -171,7 +171,7 @@ string send(string host, string user, string pass, long long port, SMTPClientSes
     {
         session.login(SMTPClientSession::AUTH_LOGIN, user, pass);
 
-        session.sendMessage(*msg, to);
+        session.sendMessage(msg, to);
     }
     catch(SMTPException &e)
     {
@@ -189,7 +189,7 @@ string send(string host, string user, string pass, long long port, SMTPClientSes
     return results;
 }
 
-string sendSecure(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage *msg, char *error) {
+string sendSecure(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage &msg, char *error) {
     SecureSMTPClientSession session(host, port);
 
     string results = "Message Sent";
@@ -200,7 +200,7 @@ string sendSecure(string host, string user, string pass, long long port, SMTPCli
         session.startTLS();
         session.login(SMTPClientSession::AUTH_LOGIN, user, pass);
 
-        session.sendMessage(*msg, to);
+        session.sendMessage(msg, to);
     }
     catch(SMTPException &e)
     {
