@@ -30,7 +30,7 @@ using namespace std;
 using namespace Poco::Net;
 
 extern "C" {
-   my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message);
+   bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message);
    void sendmail_deinit(UDF_INIT *initid);
    char *sendmail(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error);
 }
@@ -38,7 +38,7 @@ extern "C" {
 string send(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage &msg, char *error);
 string sendSecure(string host, string user, string pass, long long port, SMTPClientSession::Recipients to, MailMessage &msg, char *error);
 
-my_bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
+bool sendmail_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
 
     if(args->arg_count != 9)
     {
@@ -183,6 +183,11 @@ string send(string host, string user, string pass, long long port, SMTPClientSes
         *error = 1;
         results = "Net Exception: " + e.message();
     }
+    catch(...)
+    {
+        *error = 1;
+        results = "Unknown Error: Failed to send email";
+    }
 
     session.close();
 
@@ -211,6 +216,11 @@ string sendSecure(string host, string user, string pass, long long port, SMTPCli
     {
         *error = 1;
         results = "Net Exception: " + e.message();
+    }
+    catch(...)
+    {
+        *error = 1;
+        results = "Unknown Error: Failed to send email";
     }
 
     session.close();
